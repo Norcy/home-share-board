@@ -27,6 +27,7 @@ export default function Home() {
   const [preview, setPreview] = useState<ShareItem | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const dragDepth = useRef(0);
 
   const loadItems = useCallback(async () => {
     try {
@@ -121,8 +122,34 @@ export default function Home() {
     await loadItems();
   };
 
-  const dropFiles = (event: DragEvent) => {
+  const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes("Files");
+
+  const dragEnter = (event: DragEvent) => {
+    if (!hasFiles(event)) return;
     event.preventDefault();
+    dragDepth.current += 1;
+    setDragging(true);
+  };
+
+  const dragOver = (event: DragEvent) => {
+    if (!hasFiles(event)) return;
+    event.preventDefault();
+  };
+
+  const dragLeave = (event: DragEvent) => {
+    if (!hasFiles(event)) return;
+    event.preventDefault();
+    dragDepth.current -= 1;
+    if (dragDepth.current <= 0) {
+      dragDepth.current = 0;
+      setDragging(false);
+    }
+  };
+
+  const dropFiles = (event: DragEvent) => {
+    if (!hasFiles(event)) return;
+    event.preventDefault();
+    dragDepth.current = 0;
     setDragging(false);
     if (event.dataTransfer.files.length) void sendFiles(event.dataTransfer.files);
   };
@@ -136,13 +163,13 @@ export default function Home() {
   </article>;
 
   return (
-    <main className="shell">
+    <main className={`shell${dragging ? " is-dragging" : ""}`} onDragEnter={dragEnter} onDragOver={dragOver} onDragLeave={dragLeave} onDrop={dropFiles}>
       <header className="topbar">
         <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
       </header>
 
       <section className="composer">
-        <div className={`composer-box${dragging ? " is-dragging" : ""}`} onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={dropFiles}>
+        <div className={`composer-box${dragging ? " is-dragging" : ""}`}>
           <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.altKey && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
           <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
         </div>
