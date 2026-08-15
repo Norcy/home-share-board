@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DragEvent } from "react";
-import { ArrowRight, Download, Paperclip, Trash2 } from "lucide-react";
+import { ArrowRight, Download, Image as ImageIcon, Paperclip, Trash2 } from "lucide-react";
 
 type ShareItem = {
   id: string;
@@ -12,11 +12,30 @@ type ShareItem = {
   size?: number;
   mime?: string;
   data?: string;
+  source?: string;
   createdAt: number;
 };
 
 const formatSize = (bytes = 0) =>
   bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+
+const formatTime = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${month}/${day} ${date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+};
+
+const deviceName = () => {
+  if (typeof navigator === "undefined") return "设备";
+  const userAgent = navigator.userAgent;
+  if (/iPad/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "iPad";
+  if (/iPhone/i.test(userAgent)) return "iPhone";
+  if (/Android/i.test(userAgent)) return "Android";
+  if (/Windows/i.test(userAgent)) return "Windows";
+  if (/Macintosh|Mac OS X/i.test(userAgent)) return "Mac";
+  return "设备";
+};
 
 export default function Home() {
   const [items, setItems] = useState<ShareItem[]>([]);
@@ -27,6 +46,7 @@ export default function Home() {
   const [preview, setPreview] = useState<ShareItem | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const galleryInput = useRef<HTMLInputElement>(null);
 
   const loadItems = useCallback(async () => {
     try {
@@ -52,7 +72,7 @@ export default function Home() {
     const response = await fetch("/api/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind: "text", text: draft.trim() }),
+      body: JSON.stringify({ kind: "text", text: draft.trim(), source: deviceName() }),
     });
     if (response.ok) {
       setDraft("");
@@ -78,7 +98,7 @@ export default function Home() {
       await fetch("/api/items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind: file.type.startsWith("image/") ? "image" : "file", name: file.name, size: file.size, mime: file.type, data }),
+        body: JSON.stringify({ kind: file.type.startsWith("image/") ? "image" : "file", name: file.name, size: file.size, mime: file.type, data, source: deviceName() }),
       });
     }
     await loadItems();
@@ -122,10 +142,19 @@ export default function Home() {
   };
 
   const deleteItem = async (item: ShareItem) => {
-    const response = await fetch(`/api/items?id=${encodeURIComponent(item.id)}`, { method: "DELETE" });
-    if (response.ok) {
-      await loadItems();
-      showNotice("已删除");
+    const previousItems = items;
+    setItems((currentItems) => currentItems.filter((currentItem) => currentItem.id !== item.id));
+    try {
+      const response = await fetch(`/api/items?id=${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      if (response.ok) {
+        showNotice("已删除");
+      } else {
+        setItems(previousItems);
+        showNotice("删除失败，请重试");
+      }
+    } catch {
+      setItems(previousItems);
+      showNotice("删除失败，请重试");
     }
   };
 
@@ -173,25 +202,25 @@ export default function Home() {
   const textItems = items.filter((item) => item.kind === "text");
   const assetItems = items.filter((item) => item.kind !== "text");
 
-  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><button className="delete-button text-delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={15} /></button></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
-    <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>{item.kind === "image" ? "图片" : "文件"}</span></div>
-    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={15} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div>}
+  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><div className="text-footer"><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span className="card-time">{formatTime(item.createdAt)}</span></span><button className="delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={12} /></button></div></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
+    {item.kind !== "image" && <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>文件</span></div>}
+    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)} · <span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"} · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>}
   </article>;
 
   return (
     <main className={`shell${dragging ? " is-dragging" : ""}`}>
       <header className="topbar">
         <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
+        <button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button>
       </header>
 
       <section className="composer">
         <div className={`composer-box${dragging ? " is-dragging" : ""}`}>
           <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.altKey && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
-          <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
+          <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><button className="file-button gallery-button" type="button" title="从相册选择" onClick={() => galleryInput.current?.click()}><ImageIcon size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><input ref={galleryInput} type="file" accept="image/*" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
         </div>
       </section>
 
-      <div className="board-actions"><button className="clear-button" type="button" onClick={() => void clearItems()}><Trash2 size={15} /> 清空</button></div>
       {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length === 0 ? <div className="empty-state"><p>还没有共享内容</p></div> : <>
         <div className="content-columns">
         <section className="content-column">
