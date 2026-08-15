@@ -33,7 +33,7 @@ textarea::placeholder { color: #a4aea7; }
 .board-actions { display: flex; justify-content: flex-end; margin: 46px 0 12px; }
 .clear-button { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: #89958e; padding: 5px 0; font-size: 11px; }
 .clear-button:hover { color: #b3655e; }
-.board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; }
+.content-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 18px; }.content-column { display: flex; min-width: 0; flex-direction: column; gap: 12px; }
 .item-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 .text-card { max-height: 260px; cursor: pointer; transition: border-color .15s, background .15s; }
 .text-card:hover { border-color: #a9c497; background: #fbfff8; }
@@ -43,7 +43,7 @@ textarea::placeholder { color: #a4aea7; }
 .type-dot { width: 6px; height: 6px; border-radius: 50%; background: #92aa88; }
 .type-dot.image { background: #c99761; }
 .type-dot.file { background: #8c9dd2; }
-.image-card { height: 260px; }.item-image { display: block; width: 100%; height: auto; max-height: 160px; margin: 12px 0 10px; border-radius: 8px; background: #f4f6f2; object-fit: contain; cursor: zoom-in; }
+.image-card { height: auto; }.item-image { display: block; width: 100%; height: auto; max-height: 260px; margin: 12px 0 10px; border-radius: 8px; background: #f4f6f2; object-fit: contain; cursor: zoom-in; }
 .file-footer { display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .file-footer > div, .file-row > div:nth-child(2) { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
 .file-footer strong, .file-row strong { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
@@ -65,6 +65,6 @@ footer { display: flex; justify-content: space-between; margin-top: 28px; paddin
   .shell { width: min(calc(100% - 28px), 520px); padding-top: 18px; }
   .topbar { padding-bottom: 22px; }
   textarea { height: 132px; padding: 16px; }
-  .board { grid-template-columns: 1fr; }
+  .content-columns { grid-template-columns: 1fr; }
   footer { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
