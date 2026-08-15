@@ -45,7 +45,7 @@ yarn dev
 
 ## 进阶使用
 
-### 自动启动：安装
+### 开机启动
 
 在项目目录中运行：
 
@@ -53,13 +53,13 @@ yarn dev
 yarn autostart
 ```
 
-### 自动启动：取消
+### 取消开机启动
 
 ```bash
 yarn autostart:cancel
 ```
 
-### 手动启动：停止
+### 停止手动启动的服务
 
 如果之前用 `./bin/my-home-desktop start` 手动启动过服务，请在项目目录执行：
 
@@ -67,17 +67,17 @@ yarn autostart:cancel
 ./bin/my-home-desktop stop
 ```
 
-### Alfred：安装
+### 安装 Alfred 快捷打开
 
 ```bash
 yarn alfred
 ```
 
-### Alfred：打开
+### 用 Alfred 打开
 
 唤起 Alfred，输入 `My Home Desktop` 并回车。
 
-### Alfred：移除
+### 移除 Alfred 快捷打开
 
 ```bash
 yarn alfred:cancel
