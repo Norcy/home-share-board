@@ -57,7 +57,11 @@ yarn autostart
 yarn autostart:cancel
 ```
 
-如果只是手动运行了服务，可以在项目目录执行 `./bin/my-home-desktop stop`。
+如果你之前用 `./bin/my-home-desktop start` 手动启动过服务，现在想停止这个手动启动的进程，请在项目目录执行：
+
+```bash
+./bin/my-home-desktop stop
+```
 
 单独安装 Alfred 工作流：
 
@@ -66,8 +70,6 @@ yarn alfred
 ```
 
 然后唤起 Alfred，输入 `My Home Desktop` 回车即可打开；移除 Alfred 工作流使用 `yarn alfred:cancel`。
-
-这些命令会根据当前项目位置生成用户级配置，不需要手动编辑路径或 plist。
 
 ## 使用技巧：添加到主屏幕
 
