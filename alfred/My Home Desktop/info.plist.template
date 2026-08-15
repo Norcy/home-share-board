@@ -16,7 +16,7 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 	</dict>
@@ -59,7 +59,7 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>exec "$HOME/Library/Application Support/My Home Desktop/my-home-desktop" open</string>
+				<string>exec "__MY_HOME_DESKTOP_ENTRYPOINT__" open</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
