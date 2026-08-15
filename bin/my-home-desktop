@@ -19,6 +19,7 @@ fi
 RUNTIME_DIR="${MY_HOME_DESKTOP_RUNTIME:-$HOME/Library/Application Support/My Home Desktop}"
 PID_FILE="$RUNTIME_DIR/my-home-desktop.pid"
 PORT="${PORT:-3000}"
+LAUNCHD_LABEL="com.myhomedesktop.launchd"
 
 mkdir -p "$RUNTIME_DIR"
 
@@ -104,6 +105,11 @@ start() {
 }
 
 stop() {
+  if launchctl print "gui/$(id -u)/$LAUNCHD_LABEL" >/dev/null 2>&1; then
+    launchctl kill SIGTERM "gui/$(id -u)/$LAUNCHD_LABEL" 2>/dev/null || true
+    echo "My Home Desktop 已停止"
+    return 0
+  fi
   if [[ ! -f "$PID_FILE" ]] || ! kill -0 "$(<"$PID_FILE")" 2>/dev/null; then
     rm -f "$PID_FILE"
     echo "My Home Desktop 未运行"

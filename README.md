@@ -59,9 +59,9 @@ yarn autostart
 yarn autostart:cancel
 ```
 
-### 停止手动启动的服务
+### 停止服务
 
-如果之前用 `./bin/my-home-desktop start` 手动启动过服务，请在项目目录执行：
+无论服务是手动启动还是开机启动，都可以在项目目录执行：
 
 ```bash
 ./bin/my-home-desktop stop
@@ -73,9 +73,7 @@ yarn autostart:cancel
 yarn alfred
 ```
 
-### 用 Alfred 打开
-
-唤起 Alfred，输入 `My Home Desktop` 并回车。
+安装后，唤起 Alfred，输入 `My Home Desktop` 并回车即可打开。
 
 ### 移除 Alfred 快捷打开
 
