@@ -12,8 +12,19 @@
 
 要求：Node.js 20.19+、Yarn。
 
+第一次使用，直接复制下面四行：
+
 ```bash
+git clone https://github.com/Norcy/my-home-desktop.git
+cd my-home-desktop
 yarn install
+yarn dev
+```
+
+以后再次使用，只需要：
+
+```bash
+cd my-home-desktop
 yarn dev
 ```
 
@@ -21,7 +32,7 @@ yarn dev
 
 ## macOS 快捷安装
 
-只配置登录后自动启动：
+只配置登录后自动启动，在项目目录中运行：
 
 ```bash
 yarn autostart
