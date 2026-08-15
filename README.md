@@ -45,31 +45,43 @@ yarn dev
 
 ## 进阶使用
 
-只配置登录后自动启动，在项目目录中运行：
+### 自动启动：安装
+
+在项目目录中运行：
 
 ```bash
 yarn autostart
 ```
 
-取消自动启动：
+### 自动启动：取消
 
 ```bash
 yarn autostart:cancel
 ```
 
-如果你之前用 `./bin/my-home-desktop start` 手动启动过服务，现在想停止这个手动启动的进程，请在项目目录执行：
+### 手动启动：停止
+
+如果之前用 `./bin/my-home-desktop start` 手动启动过服务，请在项目目录执行：
 
 ```bash
 ./bin/my-home-desktop stop
 ```
 
-单独安装 Alfred 工作流：
+### Alfred：安装
 
 ```bash
 yarn alfred
 ```
 
-然后唤起 Alfred，输入 `My Home Desktop` 回车即可打开；移除 Alfred 工作流使用 `yarn alfred:cancel`。
+### Alfred：打开
+
+唤起 Alfred，输入 `My Home Desktop` 并回车。
+
+### Alfred：移除
+
+```bash
+yarn alfred:cancel
+```
 
 ## 使用技巧：添加到主屏幕
 
