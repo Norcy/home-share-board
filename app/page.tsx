@@ -210,17 +210,19 @@ export default function Home() {
 
   return (
     <main className={`shell${dragging ? " is-dragging" : ""}`}>
-      <header className="topbar">
-        <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
-        <button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button>
-      </header>
+      <div className="sticky-header">
+        <header className="topbar">
+          <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
+          <button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button>
+        </header>
 
-      <section className="composer">
-        <div className={`composer-box${dragging ? " is-dragging" : ""}`}>
-          <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.shiftKey || event.altKey) && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
-          <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><button className="file-button gallery-button" type="button" title="从相册选择" onClick={() => galleryInput.current?.click()}><ImageIcon size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><input ref={galleryInput} type="file" accept="image/*" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
-        </div>
-      </section>
+        <section className="composer">
+          <div className={`composer-box${dragging ? " is-dragging" : ""}`}>
+            <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.shiftKey || event.altKey) && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
+            <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><button className="file-button gallery-button" type="button" title="从相册选择" onClick={() => galleryInput.current?.click()}><ImageIcon size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><input ref={galleryInput} type="file" accept="image/*" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
+          </div>
+        </section>
+      </div>
 
       {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length === 0 ? <div className="empty-state"><p>还没有共享内容</p></div> : <>
         <div className="content-columns">
@@ -234,9 +236,9 @@ export default function Home() {
         <div className="mobile-feed">{items.map(renderItem)}</div>
       </>}
 
-      <footer><span>内容只保存在这台机器的运行内存中 · 手动刷新查看最新内容</span></footer>
+      <footer><span>手动刷新查看最新内容</span></footer>
       {notice && <div className="toast">{notice}</div>}
-      {preview && <div className="lightbox" onClick={() => setPreview(null)}><img src={preview.data} alt={preview.name || "预览图片"} /></div>}
+      {preview && <div className="lightbox" onClick={() => setPreview(null)}><img src={preview.url} alt={preview.name || "预览图片"} /></div>}
     </main>
   );
 }
