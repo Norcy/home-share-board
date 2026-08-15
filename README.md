@@ -17,7 +17,7 @@
 ```bash
 git clone https://github.com/Norcy/my-home-desktop.git
 cd my-home-desktop
-yarn install
+yarn
 yarn dev
 ```
 
