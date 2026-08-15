@@ -12,6 +12,7 @@ type ShareItem = {
   size?: number;
   mime?: string;
   data?: string;
+  url?: string;
   source?: string;
   createdAt: number;
 };
@@ -128,9 +129,9 @@ export default function Home() {
   };
 
   const download = (item: ShareItem) => {
-    if (!item.data) return;
+    if (!item.url) return;
     const link = document.createElement("a");
-    link.href = item.data;
+    link.href = item.url;
     link.download = item.name || "lan-share-file";
     link.click();
   };
@@ -204,7 +205,7 @@ export default function Home() {
 
   const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><div className="text-footer"><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span className="card-time">{formatTime(item.createdAt)}</span></span><button className="delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={12} /></button></div></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
     {item.kind !== "image" && <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>文件</span></div>}
-    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)} · <span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"} · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>}
+    {item.kind === "image" ? <><img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)} · <span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"} · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>}
   </article>;
 
   return (
