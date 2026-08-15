@@ -34,11 +34,11 @@ textarea::placeholder { color: #a4aea7; }
 .clear-button { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: #89958e; padding: 5px 0; font-size: 11px; }
 .clear-button:hover { color: #b3655e; }
 .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; }
-.item-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.item-card { min-width: 0; min-height: 240px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 .text-card { cursor: pointer; transition: border-color .15s, background .15s; }
 .text-card:hover { border-color: #a9c497; background: #fbfff8; }
 .text-card:active { transform: translateY(1px); }
-.item-text { max-height: 220px; margin: 0; overflow: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.7; font-size: 14px; }
+.item-text { max-height: 204px; margin: 0; overflow: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.7; font-size: 14px; }
 .item-meta { display: flex; align-items: center; gap: 7px; color: #89958e; font-size: 11px; }
 .type-dot { width: 6px; height: 6px; border-radius: 50%; background: #92aa88; }
 .type-dot.image { background: #c99761; }
