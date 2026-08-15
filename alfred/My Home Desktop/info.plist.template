@@ -34,9 +34,9 @@
 			<key>config</key>
 			<dict>
 				<key>argumenttype</key>
-				<integer>0</integer>
+				<integer>2</integer>
 				<key>keyword</key>
-				<string>My Home Desktop</string>
+				<string>myhome</string>
 				<key>subtext</key>
 				<string>启动并打开 My Home Desktop</string>
 				<key>text</key>
@@ -59,7 +59,15 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>exec "__MY_HOME_DESKTOP_ENTRYPOINT__" open</string>
+				<string>LOG_PATH="$(dirname -- "__MY_HOME_DESKTOP_ENTRYPOINT__")/alfred.log"
+{
+  printf '%s Alfred 工作流已触发\\n' "$(date '+%Y-%m-%d %H:%M:%S')"
+  printf 'HOME=%s\\nPATH=%s\\nPWD=%s\\n' "$HOME" "$PATH" "$PWD"
+  "__MY_HOME_DESKTOP_ENTRYPOINT__" start
+  printf '启动器退出码：%s\\n' "$?"
+  /usr/bin/open "http://localhost:3000"
+  printf '打开浏览器退出码：%s\\n' "$?"
+} >>"$LOG_PATH" 2>&amp;1</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -76,7 +84,7 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>唤起 Alfred，输入 My Home Desktop 并回车，即可启动并打开 My Home Desktop。</string>
+	<string>唤起 Alfred，输入 myhome 并回车，即可启动并打开 My Home Desktop。</string>
 	<key>uidata</key>
 	<dict>
 		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
