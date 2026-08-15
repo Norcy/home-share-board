@@ -1,7 +1,5 @@
 import { createServer as createViteServer } from "vite";
 import { createServer } from "node:http";
-import { readFile } from "node:fs/promises";
-import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL(".", import.meta.url));

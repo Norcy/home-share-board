@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+while [[ -L "$SCRIPT_PATH" ]]; do
+  LINK_PATH="$(readlink "$SCRIPT_PATH")"
+  [[ "$LINK_PATH" = /* ]] || LINK_PATH="$(dirname -- "$SCRIPT_PATH")/$LINK_PATH"
+  SCRIPT_PATH="$LINK_PATH"
+done
+SCRIPT_ROOT="$(cd -- "$(dirname -- "$SCRIPT_PATH")/.." && pwd)"
+ROOT_DIR="${MY_HOME_DESKTOP_ROOT:-$SCRIPT_ROOT}"
+if [[ ! -f "$ROOT_DIR/server.mjs" && -f "$(dirname -- "$SCRIPT_PATH")/.project-root" ]]; then
+  ROOT_DIR="$(<"$(dirname -- "$SCRIPT_PATH")/.project-root")"
+fi
+if [[ ! -f "$ROOT_DIR/server.mjs" ]]; then
+  echo "找不到项目目录，请从项目内运行，或设置 MY_HOME_DESKTOP_ROOT。" >&2
+  exit 1
+fi
+RUNTIME_DIR="${MY_HOME_DESKTOP_RUNTIME:-$HOME/Library/Application Support/My Home Desktop}"
+PID_FILE="$RUNTIME_DIR/my-home-desktop.pid"
+PORT="${PORT:-3000}"
+
+mkdir -p "$RUNTIME_DIR"
+
+find_node() {
+  local candidate major minor
+
+  for candidate in "${NODE_BIN:-}" "$(command -v node 2>/dev/null || true)"; do
+    if [[ -x "$candidate" ]]; then
+      major="$("$candidate" -p 'process.versions.node.split(".")[0]' 2>/dev/null || true)"
+      minor="$("$candidate" -p 'process.versions.node.split(".")[1]' 2>/dev/null || true)"
+      if [[ "$major" =~ ^[0-9]+$ ]] && [[ "$minor" =~ ^[0-9]+$ ]] && { (( major > 20 )) || (( major == 20 && minor >= 19 )); }; then
+        printf '%s\n' "$candidate"
+        return 0
+      fi
+    fi
+  done
+
+  if [[ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]]; then
+    # shellcheck disable=SC1090
+    source "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+    nvm use --silent 20 >/dev/null 2>&1 || true
+    candidate="$(command -v node 2>/dev/null || true)"
+    if [[ -x "$candidate" ]]; then
+      major="$("$candidate" -p 'process.versions.node.split(".")[0]' 2>/dev/null || true)"
+      minor="$("$candidate" -p 'process.versions.node.split(".")[1]' 2>/dev/null || true)"
+      if [[ "$major" =~ ^[0-9]+$ ]] && [[ "$minor" =~ ^[0-9]+$ ]] && { (( major > 20 )) || (( major == 20 && minor >= 19 )); }; then
+        printf '%s\n' "$candidate"
+        return 0
+      fi
+    fi
+  fi
+
+  while IFS= read -r candidate; do
+    if [[ -x "$candidate" ]]; then
+      major="$("$candidate" -p 'process.versions.node.split(".")[0]' 2>/dev/null || true)"
+      minor="$("$candidate" -p 'process.versions.node.split(".")[1]' 2>/dev/null || true)"
+      if [[ "$major" =~ ^[0-9]+$ ]] && [[ "$minor" =~ ^[0-9]+$ ]] && { (( major > 20 )) || (( major == 20 && minor >= 19 )); }; then
+        printf '%s\n' "$candidate"
+        return 0
+      fi
+    fi
+  done < <(find "${NVM_DIR:-$HOME/.nvm}/versions/node" -type f -path '*/bin/node' 2>/dev/null | sort -Vr)
+
+  echo "找不到 Node.js 20.19 或更高版本。" >&2
+  return 1
+}
+
+status() {
+  if [[ -f "$PID_FILE" ]] && kill -0 "$(<"$PID_FILE")" 2>/dev/null; then
+    echo "My Home Desktop 正在运行 (PID $(<"$PID_FILE"))"
+    echo "http://localhost:$PORT"
+    return 0
+  fi
+  if command -v curl >/dev/null 2>&1 && curl -fsS --max-time 1 "http://localhost:$PORT" >/dev/null 2>&1; then
+    echo "My Home Desktop 正在运行：http://localhost:$PORT"
+    return 0
+  fi
+  rm -f "$PID_FILE"
+  echo "My Home Desktop 未运行"
+  return 1
+}
+
+start() {
+  if status >/dev/null 2>&1; then
+    echo "My Home Desktop 已经在运行：http://localhost:$PORT"
+    return 0
+  fi
+  local node_bin
+  node_bin="$(find_node)"
+  (
+    cd "$ROOT_DIR"
+    export PORT
+    exec "$node_bin" server.mjs
+  ) >/dev/null 2>&1 &
+  echo $! >"$PID_FILE"
+  sleep 1
+  if status >/dev/null 2>&1; then
+    echo "My Home Desktop 已启动：http://localhost:$PORT"
+  else
+    echo "启动失败。" >&2
+    return 1
+  fi
+}
+
+stop() {
+  if [[ ! -f "$PID_FILE" ]] || ! kill -0 "$(<"$PID_FILE")" 2>/dev/null; then
+    rm -f "$PID_FILE"
+    echo "My Home Desktop 未运行"
+    return 0
+  fi
+  kill "$(<"$PID_FILE")" 2>/dev/null || true
+  rm -f "$PID_FILE"
+  echo "My Home Desktop 已停止"
+}
+
+daemon() {
+  local node_bin
+  node_bin="$(find_node)"
+  cd "$ROOT_DIR"
+  export PORT
+  exec "$node_bin" server.mjs >/dev/null 2>&1
+}
+
+case "${1:-start}" in
+  start) start ;;
+  stop) stop ;;
+  restart) stop; start ;;
+  status) status ;;
+  open)
+    start >/dev/null
+    open "http://localhost:$PORT"
+    ;;
+  daemon) daemon ;;
+  *)
+    echo "用法：my-home-desktop {start|stop|restart|status|open}" >&2
+    exit 2
+    ;;
+esac

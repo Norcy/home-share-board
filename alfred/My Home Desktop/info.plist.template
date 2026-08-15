@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.norcy.my-home-desktop.alfred</string>
+	<key>connections</key>
+	<dict>
+		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Norcy</string>
+	<key>description</key>
+	<string>用 Alfred 快速打开 My Home Desktop</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>My Home Desktop</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>My Home Desktop</string>
+				<key>subtext</key>
+				<string>启动并打开 My Home Desktop</string>
+				<key>text</key>
+				<string>My Home Desktop</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>__MY_HOME_DESKTOP_ENTRYPOINT__ open</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>唤起 Alfred，输入 My Home Desktop 并回车，即可启动并打开 My Home Desktop。</string>
+	<key>uidata</key>
+	<dict>
+		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
+		<dict>
+			<key>xpos</key>
+			<real>160.0</real>
+			<key>ypos</key>
+			<real>100.0</real>
+		</dict>
+		<key>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</key>
+		<dict>
+			<key>xpos</key>
+			<real>420.0</real>
+			<key>ypos</key>
+			<real>100.0</real>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.0</string>
+</dict>
+</plist>

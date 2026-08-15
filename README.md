@@ -4,11 +4,37 @@
 
 ## 启动
 
-需要 Node.js 20.19 或更高版本：
+需要 Node.js 20.19 或更高版本，并使用 Yarn。
+
+### 普通启动
 
 ```bash
-npm install
-npm run dev
+yarn install
+yarn dev
+```
+
+也可以使用封装命令启动和管理服务。它会自动定位项目并选择合适的 Node.js：
+
+```bash
+./bin/my-home-desktop start
+./bin/my-home-desktop open
+./bin/my-home-desktop stop
+```
+
+### macOS 一键安装
+
+如果希望登录 macOS 后自动启动，并通过 Alfred 快速打开：
+
+```bash
+yarn autostart
+```
+
+安装脚本会根据当前项目路径生成用户级 LaunchAgent，并安装 Alfred 工作流。安装后，在 Alfred 中输入 `My Home Desktop` 并回车即可打开。
+
+卸载：
+
+```bash
+yarn autostart:cancel
 ```
 
 服务会监听 `0.0.0.0:3000`。在同一 Wi-Fi 下打开终端显示的地址，例如：
