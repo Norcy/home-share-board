@@ -130,6 +130,11 @@ export default function Home() {
   const textItems = items.filter((item) => item.kind === "text");
   const assetItems = items.filter((item) => item.kind !== "text");
 
+  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
+    <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>{item.kind === "image" ? "图片" : "文件"}</span></div>
+    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div>}
+  </article>;
+
   return (
     <main className="shell">
       <header className="topbar">
@@ -144,17 +149,17 @@ export default function Home() {
       </section>
 
       <div className="board-actions"><button className="clear-button" type="button" onClick={() => void clearItems()}><Trash2 size={15} /> 清空</button></div>
-      {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length === 0 ? <div className="empty-state"><p>还没有共享内容</p></div> : <div className="content-columns">
+      {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length === 0 ? <div className="empty-state"><p>还没有共享内容</p></div> : <>
+        <div className="content-columns">
         <section className="content-column">
-          {textItems.map((item) => <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p></article>)}
+          {textItems.map(renderItem)}
         </section>
         <section className="content-column">
-          {assetItems.map((item) => <article className={`item-card ${item.kind}-card`} key={item.id}>
-            <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>{item.kind === "image" ? "图片" : "文件"}</span></div>
-            {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div>}
-          </article>)}
+          {assetItems.map(renderItem)}
         </section>
-      </div>}
+        </div>
+        <div className="mobile-feed">{items.map(renderItem)}</div>
+      </>}
 
       <footer><span>内容只保存在这台机器的运行内存中 · 手动刷新查看最新内容</span></footer>
       {notice && <div className="toast">{notice}</div>}

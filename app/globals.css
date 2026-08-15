@@ -34,6 +34,7 @@ textarea::placeholder { color: #a4aea7; }
 .clear-button { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: #89958e; padding: 5px 0; font-size: 11px; }
 .clear-button:hover { color: #b3655e; }
 .content-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 18px; }.content-column { display: flex; min-width: 0; flex-direction: column; gap: 12px; }
+.mobile-feed { display: none; }
 .item-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
 .text-card { max-height: 260px; cursor: pointer; transition: border-color .15s, background .15s; }
 .text-card:hover { border-color: #a9c497; background: #fbfff8; }
@@ -65,6 +66,7 @@ footer { display: flex; justify-content: space-between; margin-top: 28px; paddin
   .shell { width: min(calc(100% - 28px), 520px); padding-top: 18px; }
   .topbar { padding-bottom: 22px; }
   textarea { height: 132px; padding: 16px; }
-  .content-columns { grid-template-columns: 1fr; }
+  .content-columns { display: none; }
+  .mobile-feed { display: flex; flex-direction: column; gap: 12px; }
   footer { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
