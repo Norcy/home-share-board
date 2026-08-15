@@ -69,9 +69,9 @@ yarn autostart:cancel
 yarn stop
 ```
 
-### Alfred 快捷打开
+### Alfred 工作流
 
-安装 Alfred 快捷打开：
+安装 Alfred 工作流：
 
 ```bash
 yarn alfred
@@ -79,7 +79,7 @@ yarn alfred
 
 安装后，唤起 Alfred，输入 `My Home Desktop` 并回车即可打开服务。
 
-移除 Alfred 快捷打开：
+移除 Alfred 工作流：
 
 ```bash
 yarn alfred:cancel
