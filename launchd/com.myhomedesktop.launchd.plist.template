@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.norcy.my-home-desktop</string>
+	<string>com.myhomedesktop.launchd</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>__MY_HOME_DESKTOP_ENTRYPOINT__</string>

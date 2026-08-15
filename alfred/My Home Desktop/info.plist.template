@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>com.norcy.my-home-desktop.alfred</string>
+	<string>com.myhomedesktop.alfred</string>
 	<key>connections</key>
 	<dict>
 		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
@@ -21,7 +21,7 @@
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string>Norcy</string>
+	<string>My Home Desktop</string>
 	<key>description</key>
 	<string>用 Alfred 快速打开 My Home Desktop</string>
 	<key>disabled</key>

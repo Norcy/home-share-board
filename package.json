@@ -11,6 +11,8 @@
     "start": "node server.mjs",
     "autostart": "bash scripts/install-macos.sh",
     "autostart:cancel": "bash scripts/uninstall-macos.sh",
+    "alfred": "bash scripts/install-alfred.sh",
+    "alfred:cancel": "bash scripts/uninstall-alfred.sh",
     "lint": "eslint . --ignore-pattern dist"
   },
   "dependencies": {
