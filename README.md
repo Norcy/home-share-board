@@ -41,6 +41,12 @@ cd my-home-desktop
 yarn start
 ```
 
+停止服务：
+
+```bash
+yarn stop
+```
+
 浏览器打开 `http://localhost:3000`。同一 Wi‑Fi 下的其他设备打开这台电脑的局域网 IP 加端口，例如 `http://<局域网IP>:3000`。
 
 ## 进阶使用
@@ -59,14 +65,6 @@ yarn autostart
 
 ```bash
 yarn autostart:cancel
-```
-
-### 停止服务
-
-停止当前服务：
-
-```bash
-yarn stop
 ```
 
 ### Alfred 工作流
