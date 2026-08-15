@@ -31,14 +31,14 @@
 git clone https://github.com/Norcy/my-home-desktop.git
 cd my-home-desktop
 yarn
-yarn dev
+yarn start
 ```
 
 以后再次使用，只需要：
 
 ```bash
 cd my-home-desktop
-yarn dev
+yarn start
 ```
 
 浏览器打开 `http://localhost:3000`。同一 Wi‑Fi 下的其他设备打开这台电脑的局域网 IP 加端口，例如 `http://<局域网IP>:3000`。
@@ -64,7 +64,7 @@ yarn autostart:cancel
 无论服务是手动启动还是开机启动，都可以在项目目录执行：
 
 ```bash
-./bin/my-home-desktop stop
+yarn stop
 ```
 
 ### 安装 Alfred 快捷打开
