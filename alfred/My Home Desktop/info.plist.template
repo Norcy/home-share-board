@@ -59,7 +59,7 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>/bin/bash -lc 'exec "$HOME/Library/Application Support/My Home Desktop/my-home-desktop" open'</string>
+				<string>exec "$HOME/Library/Application Support/My Home Desktop/my-home-desktop" open</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>

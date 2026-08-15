@@ -2,9 +2,6 @@
   "name": "my-home-desktop",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=20.19.0"
-  },
   "scripts": {
     "build": "vite build",
     "start": "bash bin/my-home-desktop start",
