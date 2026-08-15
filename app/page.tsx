@@ -121,6 +121,14 @@ export default function Home() {
     await loadItems();
   };
 
+  const deleteItem = async (item: ShareItem) => {
+    const response = await fetch(`/api/items?id=${encodeURIComponent(item.id)}`, { method: "DELETE" });
+    if (response.ok) {
+      await loadItems();
+      showNotice("已删除");
+    }
+  };
+
   useEffect(() => {
     let dragDepth = 0;
     const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes("Files");
@@ -165,9 +173,9 @@ export default function Home() {
   const textItems = items.filter((item) => item.kind === "text");
   const assetItems = items.filter((item) => item.kind !== "text");
 
-  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
+  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><button className="delete-button text-delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={15} /></button></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
     <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>{item.kind === "image" ? "图片" : "文件"}</span></div>
-    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div>}
+    {item.kind === "image" ? <><img className="item-image" src={item.data} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={15} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"}</span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={16} /></button></div>}
   </article>;
 
   return (
