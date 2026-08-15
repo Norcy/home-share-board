@@ -15,7 +15,9 @@ My Home Desktop 就像给家里的电子设备放了一张共享桌面：电脑�
 
 ## 项目预览
 
-![我家的共享桌面预览](assets/preview.png)
+![我家的共享桌面（桌面端）预览](assets/preview-desktop.png)
+
+![我家的共享桌面（移动端）预览](assets/preview-mobile.jpg)
 
 ## 它的亮点
 
