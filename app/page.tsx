@@ -27,7 +27,6 @@ export default function Home() {
   const [preview, setPreview] = useState<ShareItem | null>(null);
   const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
-  const dragDepth = useRef(0);
 
   const loadItems = useCallback(async () => {
     try {
@@ -42,10 +41,10 @@ export default function Home() {
     void loadItems();
   }, [loadItems]);
 
-  const showNotice = (message: string) => {
+  const showNotice = useCallback((message: string) => {
     setNotice(message);
     window.setTimeout(() => setNotice(""), 2200);
-  };
+  }, []);
 
   const sendText = async () => {
     if (!draft.trim() || sending) return;
@@ -63,7 +62,7 @@ export default function Home() {
     setSending(false);
   };
 
-  const sendFiles = async (files: FileList | File[]) => {
+  const sendFiles = useCallback(async (files: FileList | File[]) => {
     setSending(true);
     for (const file of Array.from(files)) {
       if (file.size > 12 * 1024 * 1024) {
@@ -86,7 +85,7 @@ export default function Home() {
     setSending(false);
     showNotice(files.length > 1 ? `已发送 ${files.length} 个文件` : "文件已放到共享板");
     if (fileInput.current) fileInput.current.value = "";
-  };
+  }, [loadItems, showNotice]);
 
   const copyText = async (text: string) => {
     try {
@@ -122,37 +121,46 @@ export default function Home() {
     await loadItems();
   };
 
-  const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes("Files");
-
-  const dragEnter = (event: DragEvent) => {
-    if (!hasFiles(event)) return;
-    event.preventDefault();
-    dragDepth.current += 1;
-    setDragging(true);
-  };
-
-  const dragOver = (event: DragEvent) => {
-    if (!hasFiles(event)) return;
-    event.preventDefault();
-  };
-
-  const dragLeave = (event: DragEvent) => {
-    if (!hasFiles(event)) return;
-    event.preventDefault();
-    dragDepth.current -= 1;
-    if (dragDepth.current <= 0) {
-      dragDepth.current = 0;
+  useEffect(() => {
+    let dragDepth = 0;
+    const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes("Files");
+    const dragEnter = (event: DragEvent) => {
+      if (!hasFiles(event)) return;
+      event.preventDefault();
+      dragDepth += 1;
+      setDragging(true);
+    };
+    const dragOver = (event: DragEvent) => {
+      if (!hasFiles(event)) return;
+      event.preventDefault();
+    };
+    const dragLeave = (event: DragEvent) => {
+      if (!hasFiles(event)) return;
+      event.preventDefault();
+      dragDepth -= 1;
+      if (dragDepth <= 0) {
+        dragDepth = 0;
+        setDragging(false);
+      }
+    };
+    const dropFiles = (event: DragEvent) => {
+      if (!hasFiles(event)) return;
+      event.preventDefault();
+      dragDepth = 0;
       setDragging(false);
-    }
-  };
-
-  const dropFiles = (event: DragEvent) => {
-    if (!hasFiles(event)) return;
-    event.preventDefault();
-    dragDepth.current = 0;
-    setDragging(false);
-    if (event.dataTransfer.files.length) void sendFiles(event.dataTransfer.files);
-  };
+      if (event.dataTransfer.files.length) void sendFiles(event.dataTransfer.files);
+    };
+    window.addEventListener("dragenter", dragEnter, true);
+    window.addEventListener("dragover", dragOver, true);
+    window.addEventListener("dragleave", dragLeave, true);
+    window.addEventListener("drop", dropFiles, true);
+    return () => {
+      window.removeEventListener("dragenter", dragEnter, true);
+      window.removeEventListener("dragover", dragOver, true);
+      window.removeEventListener("dragleave", dragLeave, true);
+      window.removeEventListener("drop", dropFiles, true);
+    };
+  }, [sendFiles]);
 
   const textItems = items.filter((item) => item.kind === "text");
   const assetItems = items.filter((item) => item.kind !== "text");
@@ -163,7 +171,7 @@ export default function Home() {
   </article>;
 
   return (
-    <main className={`shell${dragging ? " is-dragging" : ""}`} onDragEnter={dragEnter} onDragOver={dragOver} onDragLeave={dragLeave} onDrop={dropFiles}>
+    <main className={`shell${dragging ? " is-dragging" : ""}`}>
       <header className="topbar">
         <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
       </header>
