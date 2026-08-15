@@ -71,7 +71,7 @@ yarn autostart:cancel
 yarn alfred
 ```
 
-安装后，唤起 Alfred，输入 `myhome` 并回车即可打开服务。
+安装后，唤起 Alfred，输入 `myhomedesktop` 并回车即可打开服务。
 
 移除 Alfred 工作流：
 

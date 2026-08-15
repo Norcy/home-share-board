@@ -8,18 +8,31 @@
 	<dict>
 		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
 		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<true/>
-			</dict>
-		</array>
-	</dict>
+				<dict>
+					<key>destinationuid</key>
+					<string>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</string>
+					<key>modifiers</key>
+					<integer>0</integer>
+					<key>modifiersubtext</key>
+					<string></string>
+					<key>vitoclose</key>
+					<false/>
+				</dict>
+			</array>
+			<key>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</key>
+			<array>
+				<dict>
+					<key>destinationuid</key>
+					<string>4C8A2D61-7E35-49B0-9F26-1D6C5A3E8B74</string>
+					<key>modifiers</key>
+					<integer>0</integer>
+					<key>modifiersubtext</key>
+					<string></string>
+					<key>vitoclose</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
 	<key>createdby</key>
 	<string>My Home Desktop</string>
 	<key>description</key>
@@ -36,7 +49,7 @@
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
-				<string>myhome</string>
+				<string>myhomedesktop</string>
 				<key>subtext</key>
 				<string>启动并打开 My Home Desktop</string>
 				<key>text</key>
@@ -65,8 +78,6 @@
   printf 'HOME=%s\\nPATH=%s\\nPWD=%s\\n' "$HOME" "$PATH" "$PWD"
   "__MY_HOME_DESKTOP_ENTRYPOINT__" start
   printf '启动器退出码：%s\\n' "$?"
-  /usr/bin/open "http://localhost:3000"
-  printf '打开浏览器退出码：%s\\n' "$?"
 } >>"$LOG_PATH" 2>&amp;1</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
@@ -82,9 +93,28 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>http://localhost:3000</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>4C8A2D61-7E35-49B0-9F26-1D6C5A3E8B74</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string>唤起 Alfred，输入 myhome 并回车，即可启动并打开 My Home Desktop。</string>
+	<string>唤起 Alfred，输入 myhomedesktop 并回车，即可启动并打开 My Home Desktop。</string>
 	<key>uidata</key>
 	<dict>
 		<key>7F2C5D1A-0B50-4E7A-9B86-5E16ACF8D70A</key>
