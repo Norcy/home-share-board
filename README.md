@@ -47,7 +47,7 @@ yarn start
 
 ### 开机启动
 
-在项目目录中运行：
+登录 macOS 后自动启动服务：
 
 ```bash
 yarn autostart
@@ -55,27 +55,31 @@ yarn autostart
 
 ### 取消开机启动
 
+取消登录后的自动启动：
+
 ```bash
 yarn autostart:cancel
 ```
 
 ### 停止服务
 
-无论服务是手动启动还是开机启动，都可以在项目目录执行：
+停止当前服务：
 
 ```bash
 yarn stop
 ```
 
-### 安装 Alfred 快捷打开
+### Alfred 快捷打开
+
+安装 Alfred 快捷打开：
 
 ```bash
 yarn alfred
 ```
 
-安装后，唤起 Alfred，输入 `My Home Desktop` 并回车即可打开。
+安装后，唤起 Alfred，输入 `My Home Desktop` 并回车即可打开服务。
 
-### 移除 Alfred 快捷打开
+移除 Alfred 快捷打开：
 
 ```bash
 yarn alfred:cancel
