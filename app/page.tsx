@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { DragEvent } from "react";
 import { ArrowRight, Download, Paperclip, Trash2 } from "lucide-react";
 
 type ShareItem = {
@@ -24,6 +25,7 @@ export default function Home() {
   const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState("");
   const [preview, setPreview] = useState<ShareItem | null>(null);
+  const [dragging, setDragging] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const loadItems = useCallback(async () => {
@@ -119,6 +121,12 @@ export default function Home() {
     await loadItems();
   };
 
+  const dropFiles = (event: DragEvent) => {
+    event.preventDefault();
+    setDragging(false);
+    if (event.dataTransfer.files.length) void sendFiles(event.dataTransfer.files);
+  };
+
   return (
     <main className="shell">
       <header className="topbar">
@@ -126,7 +134,7 @@ export default function Home() {
       </header>
 
       <section className="composer">
-        <div className="composer-box">
+        <div className={`composer-box${dragging ? " is-dragging" : ""}`} onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={dropFiles}>
           <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if ((event.metaKey || event.ctrlKey) && event.key === "Enter") void sendText(); }} placeholder="粘贴或输入内容……" />
           <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
         </div>

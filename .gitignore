@@ -38,3 +38,8 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+
+# runtime user content (the app keeps these out of Git even if local storage is added later)
+/uploads/
+/data/
+/.runtime/
