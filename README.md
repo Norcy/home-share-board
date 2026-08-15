@@ -13,11 +13,11 @@
 
 My Home Desktop 就像给家里的电子设备放了一张共享桌面：电脑、手机和平板都可以把文字、图片和文件放上去，也可以随时拿下来。
 
-## 项目预览
+## 效果预览
 
-![我家的共享桌面（桌面端）预览](assets/preview-desktop.png)
+<img src="assets/preview-desktop.png" alt="我家的共享桌面（桌面端）预览" width="560" />
 
-![我家的共享桌面（移动端）预览](assets/preview-mobile.jpg)
+<img src="assets/preview-mobile.jpg" alt="我家的共享桌面（移动端）预览" width="240" />
 
 ## 它的亮点
 
