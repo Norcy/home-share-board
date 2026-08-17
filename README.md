@@ -44,15 +44,12 @@ cd my-home-desktop
 yarn
 ```
 
-### 启动
+### 打开与扫码
 
-在项目目录运行：
-
-```bash
-yarn start
-```
-
-浏览器打开 `http://localhost:3000`。页面会显示局域网访问二维码，手机连接同一 Wi‑Fi 后用相机扫码即可打开。
+1. 运行 `yarn start`
+2. 电脑打开 `http://localhost:3000`
+3. 点击右上角二维码按钮
+4. 手机连接同一 Wi‑Fi，用相机扫码打开
 
 ### 快速打开
 

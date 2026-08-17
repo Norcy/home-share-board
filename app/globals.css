@@ -62,7 +62,7 @@ textarea::placeholder { color: #a4aea7; }
 .card-footer::before { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: var(--line); content: ""; }
 .card-footer-content { display: flex; align-self: stretch; flex: 1; min-width: 0; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.35; }
 .card-footer-content strong, .card-footer-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.card-footer-content strong { color: var(--ink); font-size: 12px; }
+.card-footer-content strong, .card-footer-content .card-title { color: var(--ink); font-size: 12px; font-weight: 700; }
 .card-details { display: inline-flex; align-items: center; gap: 4px; }
 .card-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; margin-left: auto; }
 .card-action:active { background: #e5eddf; }
