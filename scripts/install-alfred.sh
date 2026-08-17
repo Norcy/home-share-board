@@ -5,7 +5,16 @@ SCRIPT_PATH="${BASH_SOURCE[0]}"
 ROOT_DIR="$(cd -- "$(dirname -- "$SCRIPT_PATH")/.." && pwd)"
 APP_DIR="$HOME/Library/Application Support/My Home Desktop"
 ENTRYPOINT="$APP_DIR/my-home-desktop"
-WORKFLOW_DIR="$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.9C7E2A14-6D51-4B8C-A3C9-12D4E6F8A0B2"
+ALFRED_PREFERENCES="$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences"
+ALFRED_SETTINGS="$HOME/Library/Preferences/com.runningwithcrayons.Alfred-Preferences.plist"
+if [[ -f "$ALFRED_SETTINGS" ]]; then
+  SYNC_FOLDER="$(plutil -extract syncfolder raw "$ALFRED_SETTINGS" 2>/dev/null || true)"
+  if [[ -n "$SYNC_FOLDER" ]]; then
+    SYNC_FOLDER="${SYNC_FOLDER/#\~/$HOME}"
+    ALFRED_PREFERENCES="$SYNC_FOLDER/Alfred.alfredpreferences"
+  fi
+fi
+WORKFLOW_DIR="$ALFRED_PREFERENCES/workflows/user.workflow.9C7E2A14-6D51-4B8C-A3C9-12D4E6F8A0B2"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "这个安装脚本只支持 macOS。" >&2
