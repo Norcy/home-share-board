@@ -55,25 +55,20 @@ textarea::placeholder { color: #a4aea7; }
 .text-card:hover { border-color: #a9c497; background: #fbfff8; }
 .text-card:active { transform: translateY(1px); }
 .item-text { max-height: 166px; margin: 0; overflow: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.65; font-size: 15px; }
-.item-meta { display: flex; align-items: center; gap: 7px; color: #89958e; font-size: 11px; }
-.type-dot { width: 6px; height: 6px; border-radius: 50%; background: #92aa88; }
-.type-dot.image { background: #c99761; }
-.type-dot.file { background: #8c9dd2; }
-.image-card { height: auto; }.item-image { display: block; width: 100%; height: 220px; margin: 12px 0 10px; border-radius: 8px; background: #f4f6f2; object-fit: cover; cursor: zoom-in; }
+.item-image { display: block; width: 100%; height: 220px; margin-bottom: 10px; border-radius: 8px; background: #f4f6f2; object-fit: cover; cursor: zoom-in; }
+.file-name { display: flex; min-height: 44px; align-items: center; overflow: hidden; font-size: 14px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
 .file-footer { display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 .text-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 .card-details { display: inline-flex; align-items: center; gap: 4px; }
 .card-time { font-size: 12px; }
 .via-label { font-size: 12px; }
-.file-footer > div, .file-row > div:nth-child(2) { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
-.file-footer strong, .file-row strong { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.file-footer span, .file-row span { color: var(--muted); font-size: 12px; }
+.file-footer > div { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.file-footer strong { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.file-footer span { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .download-button { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; margin-left: auto; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: #66746d; }
 .download-button:hover { border-color: #a8c58d; background: #f0f5ec; color: var(--ink); }
 .delete-button { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; margin-left: 6px; padding: 0; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: var(--danger); }
 .delete-button:hover { background: #fff4f1; color: var(--danger-hover); }
-.file-row { display: flex; align-items: center; gap: 12px; min-height: 74px; margin-top: 12px; }
-.file-icon { display: grid; flex: 0 0 40px; place-items: center; height: 46px; border-radius: 8px; background: #eef2fb; color: #8799cf; font-size: 19px; }
 
 .empty-state { grid-column: 1 / -1; margin-top: 46px; padding: 56px 0; text-align: center; color: var(--muted); font-size: 12px; }
 .spinner { width: 22px; height: 22px; margin: 0 auto 10px; border: 2px solid #dbe6d9; border-top-color: #7da274; border-radius: 50%; animation: spin .8s linear infinite; }
@@ -81,7 +76,6 @@ textarea::placeholder { color: #a4aea7; }
 .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); padding: 11px 16px; border-radius: 6px; background: var(--deep); color: white; font-size: 12px; }
 .lightbox { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(10, 20, 17, .82); cursor: zoom-out; }
 .lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
-footer { display: flex; justify-content: space-between; margin-top: 28px; padding: 0 2px; color: #9ba7a0; font-size: 10px; }
 
 @media (max-width: 680px) {
   .shell { width: min(calc(100% - 28px), 520px); padding-top: 18px; }
@@ -98,5 +92,4 @@ footer { display: flex; justify-content: space-between; margin-top: 28px; paddin
   .download-button:hover::before { background: #f0f5ec; }
   .content-columns { display: none; }
   .mobile-feed { display: flex; flex-direction: column; gap: 12px; }
-  footer { flex-direction: column; align-items: flex-start; gap: 10px; }
 }

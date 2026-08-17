@@ -236,8 +236,8 @@ export default function Home() {
   const assetItems = items.filter((item) => item.kind !== "text");
 
   const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><div className="text-footer"><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span className="card-time">{formatTime(item.createdAt)}</span></span><button className="delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={12} /></button></div></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
-    {item.kind !== "image" && <div className="item-meta"><span className={`type-dot ${item.kind}`} /> <span>文件</span></div>}
-    {item.kind === "image" ? <><img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /><div className="file-footer"><div><strong>{item.name}</strong><span>{formatSize(item.size)} · <span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div></> : <div className="file-row"><div className="file-icon">↘</div><div><strong>{item.name}</strong><span>{formatSize(item.size)} · {item.mime || "文件"} · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="download-button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>}
+    {item.kind === "image" ? <img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /> : <strong className="file-name">{item.name}</strong>}
+    <div className="file-footer"><div>{item.kind === "image" && <strong>{item.name}</strong>}<span>{formatSize(item.size)} · {item.kind === "file" ? `${item.mime || "文件"} · ` : ""}<span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" type="button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>
   </article>;
 
   return (
@@ -250,13 +250,13 @@ export default function Home() {
 
         <section className="composer">
           <div className={`composer-box${dragging ? " is-dragging" : ""}`}>
-            <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.shiftKey || event.altKey) && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
+            <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) && !event.nativeEvent.isComposing) { event.preventDefault(); void sendText(); } }} placeholder="输入文字或拖入图片" />
             <div className="composer-actions"><div className="action-row"><button className="file-button" type="button" title="添加文件或图片" onClick={() => fileInput.current?.click()}><Paperclip size={20} strokeWidth={1.8} /></button><button className="file-button gallery-button" type="button" title="从相册选择" onClick={() => galleryInput.current?.click()}><ImageIcon size={20} strokeWidth={1.8} /></button><input ref={fileInput} type="file" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><input ref={galleryInput} type="file" accept="image/*" multiple hidden onChange={(event) => event.target.files && void sendFiles(event.target.files)} /><button className="send-button" type="button" title="发送" onClick={() => void sendText()} disabled={!draft.trim() || sending}>{sending ? "…" : <ArrowRight size={21} strokeWidth={2.2} />}</button></div></div>
           </div>
         </section>
       </div>
 
-      {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length === 0 ? <div className="empty-state"><p>还没有共享内容</p></div> : <>
+      {loading ? <div className="empty-state"><div className="spinner" /><p>正在连接共享板…</p></div> : items.length > 0 && <>
         <div className="content-columns">
         <section className="content-column">
           {textItems.map(renderItem)}
@@ -268,7 +268,6 @@ export default function Home() {
         <div className="mobile-feed">{items.map(renderItem)}</div>
       </>}
 
-      <footer><span>手动刷新查看最新内容</span></footer>
       {showAccess && <div className="access-backdrop" role="presentation" onClick={() => setShowAccess(false)}><section className="access-dialog" role="dialog" aria-modal="true" aria-label="手机扫码访问" onClick={(event) => event.stopPropagation()}><button className="access-close" type="button" title="关闭" aria-label="关闭" onClick={() => setShowAccess(false)}><X size={16} /></button>{accessUrl ? <><div className="access-qr"><QRCodeSVG value={accessUrl} size={184} level="M" marginSize={1} title="手机访问共享桌面" /></div><div className="access-details"><strong>手机扫码访问</strong><span>连接同一 Wi‑Fi，用相机扫描二维码</span><button type="button" onClick={() => void copyText(accessUrl)}>{accessUrl}</button></div></> : <div className="access-details"><strong>手机扫码访问</strong><span>{accessChecked ? "未检测到局域网地址，请确认已连接 Wi‑Fi" : "正在检测局域网地址…"}</span></div>}</section></div>}
       {notice && <div className="toast">{notice}</div>}
       {preview && <div className="lightbox" onClick={() => setPreview(null)}><img src={preview.url} alt={preview.name || "预览图片"} /></div>}
