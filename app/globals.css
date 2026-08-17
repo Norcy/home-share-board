@@ -57,18 +57,17 @@ textarea::placeholder { color: #a4aea7; }
 .item-text { max-height: 166px; margin: 0; overflow: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.65; font-size: 15px; }
 .item-image { display: block; width: 100%; height: 220px; margin-bottom: 10px; border-radius: 8px; background: #f4f6f2; object-fit: cover; cursor: zoom-in; }
 .file-name { display: flex; min-height: 44px; align-items: center; overflow: hidden; font-size: 14px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
-.file-footer { display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.text-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.card-footer { display: flex; min-height: 39px; align-items: center; gap: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.card-footer-content { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.card-footer-content strong, .card-footer-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-footer-content strong { color: var(--ink); font-size: 12px; }
 .card-details { display: inline-flex; align-items: center; gap: 4px; }
-.card-time { font-size: 12px; }
-.via-label { font-size: 12px; }
-.file-footer > div { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
-.file-footer strong { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.file-footer span { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.download-button { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; margin-left: auto; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: #66746d; }
-.download-button:hover { border-color: #a8c58d; background: #f0f5ec; color: var(--ink); }
-.delete-button { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; margin-left: 6px; padding: 0; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: var(--danger); }
-.delete-button:hover { background: #fff4f1; color: var(--danger-hover); }
+.card-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; margin-left: auto; }
+.card-action { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: #66746d; }
+.card-action:hover { border-color: #a8c58d; background: #f0f5ec; color: var(--ink); }
+.card-action:active { background: #e5eddf; }
+.card-action.is-danger { border-color: var(--line); color: var(--danger); }
+.card-action.is-danger:hover, .card-action.is-danger:active { border-color: var(--danger); background: #fff4f1; color: var(--danger-hover); }
 
 .empty-state { grid-column: 1 / -1; margin-top: 46px; padding: 56px 0; text-align: center; color: var(--muted); font-size: 12px; }
 .spinner { width: 22px; height: 22px; margin: 0 auto 10px; border: 2px solid #dbe6d9; border-top-color: #7da274; border-radius: 50%; animation: spin .8s linear infinite; }
@@ -82,14 +81,7 @@ textarea::placeholder { color: #a4aea7; }
   .topbar { padding-bottom: 22px; }
   textarea { height: 100px; padding: 16px; }
   .gallery-button { display: grid; }
-  .delete-button { position: relative; width: 34px; height: 34px; border-color: transparent; background: transparent; }
-  .delete-button::before { position: absolute; inset: 4px; border: 1px solid currentColor; border-radius: 6px; content: ""; pointer-events: none; }
-  .delete-button:hover { background: transparent; }
-  .delete-button:hover::before { background: #fff4f1; }
-  .download-button { position: relative; width: 34px; height: 34px; border-color: transparent; background: transparent; }
-  .download-button::before { position: absolute; inset: 4px; border: 1px solid currentColor; border-radius: 6px; content: ""; pointer-events: none; }
-  .download-button:hover { background: transparent; }
-  .download-button:hover::before { background: #f0f5ec; }
+  .card-action { width: 34px; height: 34px; }
   .content-columns { display: none; }
   .mobile-feed { display: flex; flex-direction: column; gap: 12px; }
 }

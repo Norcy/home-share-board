@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { DragEvent } from "react";
-import { ArrowRight, Download, Image as ImageIcon, Paperclip, QrCode, Trash2, X } from "lucide-react";
+import type { DragEvent, ReactNode } from "react";
+import { ArrowRight, Copy, Download, Image as ImageIcon, Paperclip, QrCode, Trash2, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 type AccessInfo = {
@@ -21,6 +21,21 @@ type ShareItem = {
   source?: string;
   createdAt: number;
 };
+
+type CardAction = {
+  label: string;
+  icon: ReactNode;
+  tone?: "danger";
+  onClick: () => void;
+};
+
+function CardActions({ actions }: { actions: CardAction[] }) {
+  return <div className="card-actions">{actions.map((action) => <button className={`card-action${action.tone === "danger" ? " is-danger" : ""}`} type="button" title={action.label} aria-label={action.label} key={action.label} onClick={(event) => { event.stopPropagation(); action.onClick(); }}>{action.icon}</button>)}</div>;
+}
+
+function CardFooter({ children, actions }: { children: ReactNode; actions: CardAction[] }) {
+  return <div className="card-footer"><div className="card-footer-content">{children}</div><CardActions actions={actions} /></div>;
+}
 
 const formatSize = (bytes = 0) =>
   bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -235,9 +250,16 @@ export default function Home() {
   const textItems = items.filter((item) => item.kind === "text");
   const assetItems = items.filter((item) => item.kind !== "text");
 
-  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><div className="text-footer"><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span className="card-time">{formatTime(item.createdAt)}</span></span><button className="delete-button" type="button" title="删除" onClick={(event) => { event.stopPropagation(); void deleteItem(item); }}><Trash2 size={12} /></button></div></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
+  const actionsFor = (item: ShareItem): CardAction[] => [
+    { label: "删除", icon: <Trash2 size={12} />, tone: "danger", onClick: () => void deleteItem(item) },
+    item.kind === "text"
+      ? { label: "复制", icon: <Copy size={12} />, onClick: () => void copyText(item.text || "") }
+      : { label: "下载", icon: <Download size={12} />, onClick: () => download(item) },
+  ];
+
+  const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><CardFooter actions={actionsFor(item)}><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span>{formatTime(item.createdAt)}</span></span></CardFooter></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
     {item.kind === "image" ? <img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /> : <strong className="file-name">{item.name}</strong>}
-    <div className="file-footer"><div>{item.kind === "image" && <strong>{item.name}</strong>}<span>{formatSize(item.size)} · {item.kind === "file" ? `${item.mime || "文件"} · ` : ""}<span className="via-label">{item.source || "设备"}</span> · <span className="card-time">{formatTime(item.createdAt)}</span></span></div><button className="delete-button" type="button" title="删除" onClick={() => void deleteItem(item)}><Trash2 size={12} /></button><button className="download-button" type="button" title="下载" onClick={() => download(item)}><Download size={12} /></button></div>
+    <CardFooter actions={actionsFor(item)}>{item.kind === "image" && <strong>{item.name}</strong>}<span>{formatSize(item.size)} · {item.kind === "file" ? `${item.mime || "文件"} · ` : ""}{item.source || "设备"} · {formatTime(item.createdAt)}</span></CardFooter>
   </article>;
 
   return (
