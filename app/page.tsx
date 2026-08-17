@@ -80,6 +80,12 @@ export default function Home() {
   }, [initialAccessUrl, loadItems]);
 
   useEffect(() => {
+    const events = new EventSource("/api/events");
+    events.addEventListener("change", () => void loadItems());
+    return () => events.close();
+  }, [loadItems]);
+
+  useEffect(() => {
     if (!showAccess) return;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setShowAccess(false);

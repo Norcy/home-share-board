@@ -11,6 +11,7 @@ const dataDirectory = path.join(root, "data");
 const filesDirectory = path.join(dataDirectory, "files");
 const itemsFile = path.join(dataDirectory, "items.json");
 const items = [];
+const changeSubscribers = new Set();
 
 await mkdir(filesDirectory, { recursive: true });
 try {
@@ -23,6 +24,21 @@ try {
 function json(response, status, body) {
   response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
   response.end(JSON.stringify(body));
+}
+
+function publishChange() {
+  for (const response of changeSubscribers) response.write("event: change\ndata: {}\n\n");
+}
+
+function subscribeToChanges(request, response) {
+  response.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+  });
+  response.write("event: ready\ndata: {}\n\n");
+  changeSubscribers.add(response);
+  request.on("close", () => changeSubscribers.delete(response));
 }
 
 async function saveItems() {
@@ -84,6 +100,7 @@ async function serveFile(response, item, headOnly = false) {
 }
 
 async function handleApi(request, response, url) {
+  if (url.pathname === "/api/events" && request.method === "GET") return subscribeToChanges(request, response);
   if (url.pathname === "/api/access" && request.method === "GET") {
     const addresses = accessAddresses(port);
     return json(response, 200, { url: addresses[0]?.url || null, addresses });
@@ -115,6 +132,7 @@ async function handleApi(request, response, url) {
       const removedItems = items.splice(80);
       await Promise.all(removedItems.map(removeFile));
       await saveItems();
+      publishChange();
       return json(response, 201, item);
     }).catch(() => json(response, 400, { error: "无法保存内容" }));
   }
@@ -124,6 +142,7 @@ async function handleApi(request, response, url) {
       const removedItems = items.splice(0);
       await Promise.all(removedItems.map(removeFile));
       await saveItems();
+      publishChange();
       return json(response, 200, { ok: true });
     }
 
@@ -132,6 +151,7 @@ async function handleApi(request, response, url) {
       const [removedItem] = items.splice(index, 1);
       await removeFile(removedItem);
       await saveItems();
+      publishChange();
     }
     return json(response, 200, { ok: true });
   }
