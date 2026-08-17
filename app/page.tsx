@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DragEvent } from "react";
-import { ArrowRight, Download, Image as ImageIcon, Paperclip, Trash2 } from "lucide-react";
+import { ArrowRight, Download, Image as ImageIcon, Paperclip, QrCode, Trash2, X } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+
+type AccessInfo = {
+  url: string | null;
+};
 
 type ShareItem = {
   id: string;
@@ -38,6 +43,8 @@ const deviceName = () => {
   return "设备";
 };
 
+const isPrivateHostname = (hostname: string) => /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(hostname);
+
 export default function Home() {
   const [items, setItems] = useState<ShareItem[]>([]);
   const [draft, setDraft] = useState("");
@@ -46,6 +53,10 @@ export default function Home() {
   const [notice, setNotice] = useState("");
   const [preview, setPreview] = useState<ShareItem | null>(null);
   const [dragging, setDragging] = useState(false);
+  const initialAccessUrl = typeof window !== "undefined" && isPrivateHostname(window.location.hostname) ? window.location.origin : null;
+  const [accessUrl, setAccessUrl] = useState<string | null>(initialAccessUrl);
+  const [accessChecked, setAccessChecked] = useState(Boolean(initialAccessUrl));
+  const [showAccess, setShowAccess] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const galleryInput = useRef<HTMLInputElement>(null);
 
@@ -60,7 +71,22 @@ export default function Home() {
 
   useEffect(() => {
     void loadItems();
-  }, [loadItems]);
+    if (initialAccessUrl) return;
+    fetch("/api/access", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<AccessInfo> : Promise.reject())
+      .then((access) => setAccessUrl(access.url))
+      .catch(() => setAccessUrl(null))
+      .finally(() => setAccessChecked(true));
+  }, [initialAccessUrl, loadItems]);
+
+  useEffect(() => {
+    if (!showAccess) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowAccess(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [showAccess]);
 
   const showNotice = useCallback((message: string) => {
     setNotice(message);
@@ -213,7 +239,7 @@ export default function Home() {
       <div className="sticky-header">
         <header className="topbar">
           <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
-          <button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button>
+          <div className="topbar-actions"><button className="qr-button" type="button" title="手机扫码访问" aria-label="手机扫码访问" aria-expanded={showAccess} onClick={() => setShowAccess(true)}><QrCode size={15} /></button><button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button></div>
         </header>
 
         <section className="composer">
@@ -237,6 +263,7 @@ export default function Home() {
       </>}
 
       <footer><span>手动刷新查看最新内容</span></footer>
+      {showAccess && <div className="access-backdrop" role="presentation" onClick={() => setShowAccess(false)}><section className="access-dialog" role="dialog" aria-modal="true" aria-label="手机扫码访问" onClick={(event) => event.stopPropagation()}><button className="access-close" type="button" title="关闭" aria-label="关闭" onClick={() => setShowAccess(false)}><X size={16} /></button>{accessUrl ? <><div className="access-qr"><QRCodeSVG value={accessUrl} size={184} level="M" marginSize={1} title="手机访问共享桌面" /></div><div className="access-details"><strong>手机扫码访问</strong><span>连接同一 Wi‑Fi，用相机扫描二维码</span><button type="button" onClick={() => void copyText(accessUrl)}>{accessUrl}</button></div></> : <div className="access-details"><strong>手机扫码访问</strong><span>{accessChecked ? "未检测到局域网地址，请确认已连接 Wi‑Fi" : "正在检测局域网地址…"}</span></div>}</section></div>}
       {notice && <div className="toast">{notice}</div>}
       {preview && <div className="lightbox" onClick={() => setPreview(null)}><img src={preview.url} alt={preview.name || "预览图片"} /></div>}
     </main>

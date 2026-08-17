@@ -1,6 +1,7 @@
 import { createReadStream } from "node:fs";
 import { mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
+import { networkInterfaces } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { createServer as createViteServer } from "vite";
@@ -51,6 +52,19 @@ function decodeData(data) {
   return { mime: match[1] || "application/octet-stream", buffer: Buffer.from(match[2], "base64") };
 }
 
+function accessAddresses(port) {
+  const virtualInterface = /^(awdl|bridge|docker|llw|tap|tun|utun|veth|vmnet)/i;
+  const privateAddress = (address) => {
+    const parts = address.split(".").map(Number);
+    return parts[0] === 10 || (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) || (parts[0] === 192 && parts[1] === 168);
+  };
+  return Object.entries(networkInterfaces())
+    .flatMap(([interfaceName, addresses]) => (addresses || []).map((entry) => ({ interfaceName, entry })))
+    .filter(({ interfaceName, entry }) => entry.family === "IPv4" && !entry.internal && privateAddress(entry.address) && !virtualInterface.test(interfaceName))
+    .sort((left, right) => Number(!/^en\d+$/.test(left.interfaceName)) - Number(!/^en\d+$/.test(right.interfaceName)))
+    .map(({ interfaceName, entry }) => ({ interface: interfaceName, address: entry.address, url: `http://${entry.address}:${port}` }));
+}
+
 async function serveFile(response, item, headOnly = false) {
   const filePath = path.join(filesDirectory, item.id);
   try {
@@ -70,6 +84,10 @@ async function serveFile(response, item, headOnly = false) {
 }
 
 async function handleApi(request, response, url) {
+  if (url.pathname === "/api/access" && request.method === "GET") {
+    const addresses = accessAddresses(port);
+    return json(response, 200, { url: addresses[0]?.url || null, addresses });
+  }
   if (url.pathname.startsWith("/api/files/") && (request.method === "GET" || request.method === "HEAD")) {
     const id = decodeURIComponent(url.pathname.slice("/api/files/".length));
     const item = items.find((currentItem) => currentItem.id === id && currentItem.kind !== "text");
