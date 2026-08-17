@@ -20,18 +20,7 @@
 				</dict>
 			</array>
 			<key>9B1D3F2C-6A14-4D8C-9E72-2F5A0C1B8D43</key>
-			<array>
-				<dict>
-					<key>destinationuid</key>
-					<string>4C8A2D61-7E35-49B0-9F26-1D6C5A3E8B74</string>
-					<key>modifiers</key>
-					<integer>0</integer>
-					<key>modifiersubtext</key>
-					<string></string>
-					<key>vitoclose</key>
-					<true/>
-				</dict>
-			</array>
+			<array/>
 		</dict>
 	<key>createdby</key>
 	<string>My Home Desktop</string>
@@ -76,8 +65,10 @@
 {
   printf '%s Alfred 工作流已触发\\n' "$(date '+%Y-%m-%d %H:%M:%S')"
   printf 'HOME=%s\\nPATH=%s\\nPWD=%s\\n' "$HOME" "$PATH" "$PWD"
-  "__MY_HOME_DESKTOP_ENTRYPOINT__" start
-  printf '启动器退出码：%s\\n' "$?"
+  "__MY_HOME_DESKTOP_ENTRYPOINT__" open
+  status=$?
+  printf '启动器退出码：%s\\n' "$status"
+  exit "$status"
 } >>"$LOG_PATH" 2>&amp;1</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>

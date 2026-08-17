@@ -18,6 +18,7 @@ if [[ ! -f "$ROOT_DIR/server.mjs" ]]; then
 fi
 RUNTIME_DIR="${MY_HOME_DESKTOP_RUNTIME:-$HOME/Library/Application Support/My Home Desktop}"
 PID_FILE="$RUNTIME_DIR/my-home-desktop.pid"
+LOG_FILE="$RUNTIME_DIR/server.log"
 PORT="${PORT:-3000}"
 LAUNCHD_LABEL="com.myhomedesktop.launchd"
 
@@ -68,13 +69,13 @@ find_node() {
 }
 
 status() {
-  if [[ -f "$PID_FILE" ]] && kill -0 "$(<"$PID_FILE")" 2>/dev/null; then
-    echo "My Home Desktop 正在运行 (PID $(<"$PID_FILE"))"
-    echo "http://localhost:$PORT"
-    return 0
+  local pid=""
+  if [[ -f "$PID_FILE" ]]; then
+    pid="$(<"$PID_FILE")"
   fi
-  if command -v curl >/dev/null 2>&1 && curl -fsS --max-time 1 "http://localhost:$PORT" >/dev/null 2>&1; then
-    echo "My Home Desktop 正在运行：http://localhost:$PORT"
+  if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null && command -v curl >/dev/null 2>&1 && curl -fsS --max-time 1 "http://localhost:$PORT/api/items" >/dev/null 2>&1; then
+    echo "My Home Desktop 正在运行 (PID $pid)"
+    echo "http://localhost:$PORT"
     return 0
   fi
   rm -f "$PID_FILE"
@@ -87,21 +88,34 @@ start() {
     echo "My Home Desktop 已经在运行：http://localhost:$PORT"
     return 0
   fi
-  local node_bin
+  local node_bin pid
   node_bin="$(find_node)"
+  : >"$LOG_FILE"
   (
     cd "$ROOT_DIR"
     export PORT
     exec "$node_bin" server.mjs
-  ) >/dev/null 2>&1 &
-  echo $! >"$PID_FILE"
-  sleep 1
-  if status >/dev/null 2>&1; then
-    echo "My Home Desktop 已启动：http://localhost:$PORT"
-  else
-    echo "启动失败。" >&2
-    return 1
-  fi
+  ) >>"$LOG_FILE" 2>&1 &
+  pid=$!
+  echo "$pid" >"$PID_FILE"
+  for _ in {1..30}; do
+    if ! kill -0 "$pid" 2>/dev/null; then
+      wait "$pid" 2>/dev/null || true
+      rm -f "$PID_FILE"
+      echo "启动失败，详见：$LOG_FILE" >&2
+      return 1
+    fi
+    if command -v curl >/dev/null 2>&1 && curl -fsS --max-time 1 "http://localhost:$PORT/api/items" >/dev/null 2>&1; then
+      echo "My Home Desktop 已启动：http://localhost:$PORT"
+      return 0
+    fi
+    sleep 0.1
+  done
+  kill "$pid" 2>/dev/null || true
+  wait "$pid" 2>/dev/null || true
+  rm -f "$PID_FILE"
+  echo "启动超时，详见：$LOG_FILE" >&2
+  return 1
 }
 
 stop() {
