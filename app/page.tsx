@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DragEvent, ReactNode } from "react";
-import { ArrowRight, Copy, Download, Image as ImageIcon, Paperclip, QrCode, Trash2, X } from "lucide-react";
+import { ArrowRight, Copy, Download, File, Image as ImageIcon, Paperclip, QrCode, Trash2, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 type AccessInfo = {
@@ -258,7 +258,7 @@ export default function Home() {
   ];
 
   const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><CardFooter actions={actionsFor(item)}><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span>{formatTime(item.createdAt)}</span></span></CardFooter></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
-    {item.kind === "image" ? <img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /> : <strong className="file-name">{item.name}</strong>}
+    {item.kind === "image" ? <img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /> : <div className="file-heading"><span className="file-icon"><File size={18} /></span><strong className="file-name">{item.name}</strong></div>}
     <CardFooter actions={actionsFor(item)}>{item.kind === "image" && <strong>{item.name}</strong>}<span>{formatSize(item.size)} · {item.kind === "file" ? `${item.mime || "文件"} · ` : ""}{item.source || "设备"} · {formatTime(item.createdAt)}</span></CardFooter>
   </article>;
 
@@ -267,7 +267,7 @@ export default function Home() {
       <div className="sticky-header">
         <header className="topbar">
           <div className="brand"><span className="brand-mark">↗</span><span>我家的共享桌面</span></div>
-          <div className="topbar-actions"><button className="qr-button" type="button" title="手机扫码访问" aria-label="手机扫码访问" aria-expanded={showAccess} onClick={() => setShowAccess(true)}><QrCode size={15} /></button><button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button></div>
+          <div className="topbar-actions"><button className="clear-button" type="button" title="清空" aria-label="清空" onClick={() => void clearItems()}><Trash2 size={14} /></button><button className="qr-button" type="button" title="手机扫码访问" aria-label="手机扫码访问" aria-expanded={showAccess} onClick={() => setShowAccess(true)}><QrCode size={15} /></button></div>
         </header>
 
         <section className="composer">

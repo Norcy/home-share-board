@@ -20,12 +20,14 @@ button { cursor: pointer; }
 .brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; letter-spacing: -.02em; }
 .brand-mark { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--deep); color: var(--green); font-size: 18px; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
-.qr-button { display: inline-grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: #66746d; }
-.qr-button:hover { border-color: #9fbd8c; background: #f0f5ec; color: var(--deep); }
+.qr-button, .clear-button, .access-close, .card-action { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: #66746d; }
+.qr-button svg, .clear-button svg, .access-close svg, .card-action svg { width: 14px; height: 14px; }
+.qr-button:hover, .access-close:hover, .card-action:hover { border-color: #a8c58d; background: #f0f5ec; color: var(--ink); }
+.clear-button { color: var(--danger); }
+.clear-button:hover { border-color: var(--danger); background: #fff4f1; color: var(--danger-hover); }
 .access-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 24px; background: rgba(10, 20, 17, .58); }
 .access-dialog { position: relative; display: flex; width: min(100%, 340px); flex-direction: column; align-items: center; gap: 18px; padding: 30px; border-radius: 16px; background: var(--card); box-shadow: 0 22px 70px rgba(16, 38, 31, .24); text-align: center; }
-.access-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--muted); }
-.access-close:hover { background: var(--paper); color: var(--ink); }
+.access-close { position: absolute; top: 12px; right: 12px; }
 .access-qr { display: grid; place-items: center; padding: 8px; border-radius: 10px; background: white; }
 .access-details { display: flex; min-width: 0; width: 100%; flex-direction: column; gap: 7px; }
 .access-details strong { font-size: 16px; }
@@ -45,26 +47,24 @@ textarea::placeholder { color: #a4aea7; }
 .send-button { width: 64px; border: 0; background: var(--deep); color: var(--green); }
 .send-button:hover:not(:disabled) { background: #245548; }
 .send-button:disabled { cursor: default; opacity: .4; }
-
-.clear-button { display: inline-grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: var(--danger); }
-.clear-button:hover { border-color: var(--danger-hover); background: #fff4f1; color: var(--danger-hover); }
 .content-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 18px; margin-top: 0; }.content-column { display: flex; min-width: 0; flex-direction: column; gap: 12px; }
 .mobile-feed { display: none; margin-top: 0; }
-.item-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
-.text-card { display: block; max-height: 260px; padding: 14px 16px 12px; cursor: pointer; transition: border-color .15s, background .15s; }
+.item-card { min-width: 0; padding: 18px 18px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.text-card { display: block; max-height: 260px; cursor: pointer; transition: border-color .15s, background .15s; }
 .text-card:hover { border-color: #a9c497; background: #fbfff8; }
 .text-card:active { transform: translateY(1px); }
 .item-text { max-height: 166px; margin: 0; overflow: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.65; font-size: 15px; }
 .item-image { display: block; width: 100%; height: 220px; margin-bottom: 10px; border-radius: 8px; background: #f4f6f2; object-fit: cover; cursor: zoom-in; }
-.file-name { display: flex; min-height: 44px; align-items: center; overflow: hidden; font-size: 14px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
-.card-footer { display: flex; min-height: 39px; align-items: center; gap: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
-.card-footer-content { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.file-heading { display: flex; min-height: 44px; align-items: center; gap: 12px; }
+.file-icon { display: grid; flex: 0 0 40px; place-items: center; height: 40px; border-radius: 8px; background: #eef2fb; color: #8799cf; }
+.file-name { min-width: 0; overflow: hidden; font-size: 14px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
+.card-footer { position: relative; display: flex; min-height: 51px; align-items: center; gap: 12px; margin-top: 8px; padding-top: 8px; color: var(--muted); font-size: 12px; }
+.card-footer::before { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: var(--line); content: ""; }
+.card-footer-content { display: flex; align-self: stretch; flex: 1; min-width: 0; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.35; }
 .card-footer-content strong, .card-footer-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .card-footer-content strong { color: var(--ink); font-size: 12px; }
 .card-details { display: inline-flex; align-items: center; gap: 4px; }
 .card-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; margin-left: auto; }
-.card-action { display: grid; flex: 0 0 auto; place-items: center; width: 26px; height: 26px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: #66746d; }
-.card-action:hover { border-color: #a8c58d; background: #f0f5ec; color: var(--ink); }
 .card-action:active { background: #e5eddf; }
 .card-action.is-danger { border-color: var(--line); color: var(--danger); }
 .card-action.is-danger:hover, .card-action.is-danger:active { border-color: var(--danger); background: #fff4f1; color: var(--danger-hover); }
