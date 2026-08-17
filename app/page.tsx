@@ -259,7 +259,7 @@ export default function Home() {
 
   const renderItem = (item: ShareItem) => item.kind === "text" ? <article className="item-card text-card" key={item.id} onClick={() => void copyText(item.text || "")}><p className="item-text">{item.text}</p><CardFooter actions={actionsFor(item)}><span className="card-details"><span>{item.source || "设备"}</span><span aria-hidden="true">·</span><span>{formatTime(item.createdAt)}</span></span></CardFooter></article> : <article className={`item-card ${item.kind}-card`} key={item.id}>
     {item.kind === "image" ? <img className="item-image" src={item.url} alt={item.name || "共享图片"} onClick={() => setPreview(item)} /> : <div className="file-heading"><span className="file-icon"><File size={18} /></span><strong className="file-name">{item.name}</strong></div>}
-    <CardFooter actions={actionsFor(item)}>{item.kind === "image" && <strong>{item.name}</strong>}<span>{formatSize(item.size)} · {item.kind === "file" ? `${item.mime || "文件"} · ` : ""}{item.source || "设备"} · {formatTime(item.createdAt)}</span></CardFooter>
+    <CardFooter actions={actionsFor(item)}><strong>{item.kind === "image" ? item.name : item.mime || "文件"}</strong><span>{formatSize(item.size)} · {item.source || "设备"} · {formatTime(item.createdAt)}</span></CardFooter>
   </article>;
 
   return (
